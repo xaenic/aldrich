@@ -7,15 +7,32 @@ if(!isset($_SESSION['valids']))
 include(".././config.php");
 
 
+
+if(!isset($_GET['id'])){
+    header("Location: ./home_admin.php");
+}
+
+
+$id = $_GET['id'];
 $students= [];
-$query = "SELECT * FROM sessions INNER JOIN student ON student.id = sessions.student_id ORDER BY time_out asc";
+$query = "SELECT * FROM sessions INNER JOIN student ON student.id = sessions.student_id WHERE student.id = '$id' AND time_out IS NOT NULL ORDER BY time_out ASC";
 $result = $con->query($query);
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $students[] = $row;
     }
 }
+$name = "Allan";
+$results = $con->query("SELECT * FROM student WHERE id ='$id'");
+if($results->num_rows > 0){
+    $row = $results->fetch_assoc(); 
+    $fname = $row['fname'];
+    $lname = $row['lname'];
+    $name= "$fname $lname";
+}
 $con->close();
+
+
 
 ?>
 
@@ -86,21 +103,7 @@ $con->close();
     </div>
   </div>
   <div class="flex-1 p-4 lg:ml-64  lg:pt-5">
-    <h1 class="text-xl">VIEW SITIN RECORDS</h1>
-    <div class="">
-          
-            <div class="grid grid-cols-4 mt-3">
-                <form action="" method="get" class="flex  rounded-md">
-                <div class="items-center flex justify-start w-full shadow-lg border  rounded-md bg-white">
-                    <input name="search" class="px-3 p-1 outline-none  bg-transparent " tpye="text" value="" placeholder="Search student..."/>
-                    <i class="self-center text-center w-full text-gray-500 border-l px-3 p-1 fa-solid fa-magnifying-glass"></i>
-                    <input   class="hidden shadow-lg px-3 p-1 rounded-md text-white cursor-pointer hover:bg-purple-600 bg-purple-500" type="submit" value="Search"/>
-                </div>
-                 
-            </form>
-              <input type="text" id="datetimepicker" placeholder="From Date" class="outline-none px-3 rounded-md form-input w-full">
-            </div>
-        </div>
+    <h1 class="text-xl text-center text-xl font-semibold"><?php echo $name?>'s History</h1>
      <table class="mt-5 w-full text-sm text-left rtl:text-right text-white rounded-lg overflow-hidden">
                 <thead class="text-xs bg-gradient-to-r from-green-400 to-blue-500 uppercase rounded-md">
                     <tr>
@@ -140,66 +143,5 @@ $con->close();
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-
-        $(document).ready(function() {
-
-            
-            const students = <?php echo json_encode($students); ?>;
-            console.log(students)
-            flatpickr('#datetimepicker', {
-                dateFormat: "F j, Y",
-                onChange: function(selectedDates, dateStr, instance) {
-                    const selectedDate = formatDate(dateStr);
-                    let data = "";
-                    students.forEach(student => {
-                        const studentDate = student.time_in.split(' ')[0];
-                        const time_in = new Date(student.time_in).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                         const time_out = new Date(student.time_in).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        if(selectedDate == studentDate) {
-                            const statusElement = student.time_out !== null 
-                            ? `<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>` 
-                            : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
-                            data += `<tr class="odd:bg-purple-500 bg-purple-700"><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.idno}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.firstname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.lastname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.sessions}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.email}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_in}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_out}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${statusElement}</td></tr>`
-                        }
-                       
-                    })
-                   if(data != "")
-                   $("#tbody").html(data)
-                   else 
-                    $("#tbody").html('<span class="text-xl font-semibold text-purple-700 text-center w-full">No records found</span>')
-                }
-            
-            });
-
-
-            function formatDate(dateString) {
-    
-                const date = new Date(dateString);
-
-                
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0'); 
-                const day = String(date.getDate()).padStart(2, '0');
-                const formattedDate = `${year}-${month}-${day}`;
-
-                return formattedDate;
-            }
-
-            function restore(students) {
-                let data= "";
-                const statusElement = student.time_out !== null 
-                            ? `<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>` 
-                            : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
-                            data += `<tr class="odd:bg-purple-500 bg-purple-700"><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.idno}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.firstname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.lastname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.sessions}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.email}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.time_in}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.time_out}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${statusElement}</td></tr>`
-
-                 $("#tbody").html(data)
-                        
-            }
-
-        });
-        // Initialize Flatpickr
-        
-    </script>
 </body>
-</html>
+</html> 

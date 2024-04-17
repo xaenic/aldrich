@@ -183,23 +183,26 @@ if(isset($_POST['id'])){
                  <div class="flex justify-between mt-5 gap-5">
 
                   <input type="hidden" value="<?php echo $student['id'];?>" name="id"/>
-                  <div class="flex items-center gap-2 cusor-pointer px-3 p-2 border rounded-md">
+                  <div class="flex items-center gap-2 cusor-pointer px-3 p-2 bg-sky-500 text-white border rounded-md">
                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M3 9v6c0 2.828 0 4.243.879 5.121C4.757 21 6.172 21 9 21h6c2.828 0 4.243 0 5.121-.879C21 19.243 21 17.828 21 15V9c0-2.828 0-4.243-.879-5.121C19.243 3 17.828 3 15 3H9"/><path fill="currentColor" d="M15 15v1h1v-1zM7.707 6.293a1 1 0 0 0-1.414 1.414zM14 8v7h2V8zm1 6H8v2h7zm.707.293l-8-8l-1.414 1.414l8 8z"/></g></svg>
 
 
                     <?php if($ok && $ok->num_rows > 0){?>
-
                         <p>Already Occupying</p>
                       <?php } else {?>
                      <input type="submit" value="Sit In" class="font-semibold "/>
-
-                     <?php }?>
+                    <?php }?>
+                   
                   </div>
-                    <div class="flex items-center gap-2 cusor-pointer px-3 p-2 border rounded-md">
+                  
+                    <div class="flex items-center gap-2 cusor-pointer px-3 p-2 border rounded-md bg-red-500 text-white">
                       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"/></svg>
                         <a href="./delete.php?id=<?php echo $student['id'];?>" class="font-semibold">Delete</a>
                     </div>
-                   
+                    
+                </div>
+                <div class="bg-green-500 px-3 p-2 text-white text-center mt-3 rounded-md"> 
+                  <a class="w-full"href="./history.php?id=<?php echo  $student['id'];?>">View History</a>
                 </div>
          </form>
          <?php } else if(isset($_GET['search']) && $student == null) {?>
