@@ -92,7 +92,7 @@ $con->close();
             <div class="grid grid-cols-6 mt-3 gap-3">
                 <form action="" method="get" class="flex  rounded-md">
                 <div class="items-center flex justify-start w-full shadow-lg border  rounded-md bg-white">
-                    <input name="search" class="px-3 p-1 outline-none  bg-transparent " tpye="text" value="" placeholder="Search student..."/>
+                    <input id="search" name="search" class="px-3 p-1 outline-none  bg-transparent " tpye="text" value="" placeholder="Search student..."/>
                     <i class="self-center text-center w-full text-gray-500 border-l px-3 p-1 fa-solid fa-magnifying-glass"></i>
                     <input   class="hidden shadow-lg px-3 p-1 rounded-md text-white cursor-pointer hover:bg-purple-600 bg-purple-500" type="submit" value="Search"/>
                 </div>
@@ -166,14 +166,14 @@ $con->close();
             const students = <?php echo json_encode($students); ?>;
 
 
-            $("#generate").click(function(){
+              $("#generate").click(function(){
 
-                var table = document.getElementById('oktable');
-               var wb = XLSX.utils.table_to_book(table);
+                  var table = document.getElementById('oktable');
+                var wb = XLSX.utils.table_to_book(table);
 
-    // Save the workbook as an Excel file
-                XLSX.writeFile(wb, 'table_data.xlsx');
-            })
+      // Save the workbook as an Excel file
+                  XLSX.writeFile(wb, 'table_data.xlsx');
+              })
             $("#purpose").change(function(){
               let data = "";
               students.forEach(student => {
@@ -191,9 +191,31 @@ $con->close();
               if(data != "")
                    $("#tbody").html(data)
                    else 
-                    $("#tbody").html('<span class="text-xl font-semibold text-purple-700 text-center w-full">No records found</span>')
+                    $("#tbody").html('<span class="text-xl font-semibold text-gray-700 text-center w-full">No records found</span>')
             })
-            
+             $("#search").on('input',function(){
+
+              if(this.value == "")
+                return restore(students);
+              let data = "";
+              students.forEach(student => {
+                  const studentDate = student.time_in.split(' ')[0];
+                        const time_in = new Date(student.time_in).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                         const time_out = new Date(student.time_in).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                if(student.idno == this.value){
+                 const statusElement = student.time_out !== null 
+                            ? `<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>` 
+                            : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
+                  data += `<tr r class="odd:bg-blue-400 bg-blue-700"><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.idno}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.fname} ${student.lname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.laboratory}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.purpose}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.email}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_in}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_out}</td></tr>`
+           
+           
+                }
+              })
+              if(data != "")
+                   $("#tbody").html(data)
+                   else 
+                    $("#tbody").html('<span class="text-xl font-semibold text-gray-700 text-center w-full">No records found</span>')
+            })
             $("#lab").change(function(){
               let data = "";
               students.forEach(student => {
@@ -212,7 +234,7 @@ $con->close();
               if(data != "")
                    $("#tbody").html(data)
                    else 
-                    $("#tbody").html('<span class="text-xl font-semibold text-purple-700 text-center w-full">No records found</span>')
+                    $("#tbody").html('<span class="text-xl font-semibold text-gray-700 text-center w-full">No records found</span>')
             })
             
             console.log(students)
@@ -236,7 +258,7 @@ $con->close();
                    if(data != "")
                    $("#tbody").html(data)
                    else 
-                    $("#tbody").html('<span class="text-xl font-semibold text-purple-700 text-center w-full">No records found</span>')
+                    $("#tbody").html('<span class="text-xl font-semibold text-gray-700 text-center w-full">No records found</span>')
                 }
             
             });
@@ -257,11 +279,12 @@ $con->close();
 
             function restore(students) {
                 let data= "";
-                const statusElement = student.time_out !== null 
+                students.forEach(student => {
+                 const statusElement = student.time_out !== null 
                             ? `<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>` 
                             : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
-                  data += `<tr r class="odd:bg-blue-400 bg-blue-700"><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.idno}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.fname} ${student.lname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.laboratory}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.purpose}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.email}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_in}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_out}</td></tr>`
-
+                  data += `<tr r class="odd:bg-blue-400 bg-blue-700"><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.idno}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.fname} ${student.lname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.laboratory}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.purpose}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.email}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.time_in}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.time_out}</td></tr>`
+                });
                  $("#tbody").html(data)
                         
             }

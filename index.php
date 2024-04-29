@@ -26,6 +26,7 @@
 
                 if(is_array($row) && !empty($row)){
                     $_SESSION['valid'] = $row['email'];
+                    $_SESSION['id'] = $row['id'];
 					$_SESSION['idno'] = $row['idno'];
                     $_SESSION['fname'] = $row['fname'];
                     $_SESSION['mname'] = $row['mname'];

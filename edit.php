@@ -48,7 +48,7 @@
 
                 $idno = $_SESSION['idno'];
                 $query = mysqli_query($con,"SELECT * FROM student WHERE idno=$idno ");
-
+                
                 while($result = mysqli_fetch_assoc($query)){
                     $res_email = $result['email'];
                     $res_age = $result['age'];
@@ -58,17 +58,18 @@
             <header>Change Profile</header>
             <form action="" method="post">
                 <div class="field input">
+                    <label for="email">First Name</label>
+                    <input type="text" name="fname" id="email" value="<?php echo $res_email; ?>" autocomplete="off" required>
+                </div>
+                <div class="field input">
+                    <label for="email">Last Name</label>
+                    <input type="text" name="lname" id="email" value="<?php echo $res_email; ?>" autocomplete="off" required>
+                </div>
+                <div class="field input">
                     <label for="email">Email</label>
                     <input type="text" name="email" id="email" value="<?php echo $res_email; ?>" autocomplete="off" required>
                 </div>
-
-                <div class="field input">
-                    <label for="age">Age</label>
-                    <input type="number" name="age" id="age" value="<?php echo $res_Age; ?>" autocomplete="off" required>
-                </div>
-                
                 <div class="field">
-                    
                     <input type="submit" class="btn" name="submit" value="Update" required>
                 </div>
                 
