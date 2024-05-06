@@ -8,7 +8,7 @@ include(".././config.php");
 
 
 $students= [];
-$query = "SELECT * FROM sessions INNER JOIN student ON student.id = sessions.student_id ORDER BY time_out asc";
+$query = "SELECT * FROM feedback INNER JOIN student ON student.id = feedback.student_id ";
 $result = $con->query($query);
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
@@ -94,8 +94,8 @@ $con->close();
     </div>
   </div>
   <div class="flex-1 p-4 lg:ml-64  lg:pt-5">
-    <h1 class="text-xl">VIEW SITIN RECORDS</h1>
-    <div class="">
+    <h1 class="text-xl">VIEW FEEDBACKS</h1>
+    <!-- <div class="">
           
             <div class="grid grid-cols-4 mt-3">
                 <form action="" method="get" class="flex  rounded-md">
@@ -108,19 +108,18 @@ $con->close();
             </form>
               <input type="text" id="datetimepicker" placeholder="From Date" class="outline-none px-3 rounded-md form-input w-full">
             </div>
-        </div>
+        </div> -->
      <table class="mt-5 w-full text-sm text-left rtl:text-right text-white rounded-lg overflow-hidden">
                 <thead class="text-xs bg-gradient-to-r from-green-400 to-blue-500 uppercase rounded-md">
                     <tr>
                         <th class="border px-4 py-4 font-medium border-none text-center font-bold">ID NO
                         </th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">FIRST NAME</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">LAST NAME</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">SESSIONS</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">EMAIL</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">TIME IN</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">TIME OUT</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">Operation</th>
+                        <th class="border px-4 py-4 font-medium border-none  text-center">NAME</th>
+                    
+                        <th class="border px-4 py-4 font-medium border-none  text-center">FEEDBACK</th>
+
+
+                       
                     </tr>
                 </thead>
                 <tbody id="tbody" class="relative">
@@ -131,13 +130,9 @@ $con->close();
             foreach ($students as $student) {
                    echo '<tr class="odd:bg-blue-400 bg-blue-700">
                                 <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['idno'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['fname'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['lname'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['sessions'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['email'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['time_in'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['time_out'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">' . ($student['time_out'] !== null ? '<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>' : '<a href="./timeout.php?id='.$student['id'].'&s_id='.$student['session_id'].'" class=" bg-white text-black px-3 p-2 rounded-md">Logout</a>') . '</td></tr>';
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['fname'].' '.$student['lname'].'</td>
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['content'].'</td>
+                               </tr>';
                 }
             ?>
 
