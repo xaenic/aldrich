@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 01, 2024 at 07:35 PM
+-- Generation Time: May 06, 2024 at 05:44 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `myphp`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `content` varchar(254) NOT NULL,
+  `date_created` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`id`, `student_id`, `content`, `date_created`) VALUES
+(1, 4, 'asdasdada', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -41,10 +61,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`session_id`, `student_id`, `time_out`, `time_in`, `laboratory`, `purpose`) VALUES
-(2, 1, '2024-04-02 01:31:53', '2024-04-02 01:17:56', 'Lab 524', 'Java'),
-(4, 4, '2024-04-02 01:31:39', '2024-04-02 01:27:08', 'Lab 524', 'Java'),
-(5, 4, '2024-04-02 01:31:53', '2024-04-02 01:31:49', 'Lab 524', 'Java'),
-(6, 4, '2024-04-02 01:32:10', '2024-04-02 01:32:01', 'Lab 524', 'Java');
+(7, 4, '2024-04-30 00:21:00', '2024-04-30 00:20:55', 'Lab 524', 'Java'),
+(8, 4, '2024-04-30 00:21:22', '2024-04-30 00:21:20', 'Lab 524', 'Java');
 
 -- --------------------------------------------------------
 
@@ -74,9 +92,8 @@ CREATE TABLE `student` (
 
 INSERT INTO `student` (`id`, `email`, `idno`, `fname`, `mname`, `lname`, `age`, `gender`, `contact`, `address`, `password`, `cpassword`, `sessions`) VALUES
 (1, 'aldrichbatislaon@gmail.com', 21427307, 'aldrich', 'a', 'batisla-on', 21, 'male', 12345677, 'badian', '202cb962ac59075b964b07152d234b70', '', 29),
-(2, 'sadsa@gmail.com', 123, 'sad', 'weqe', 'wqeq', 111, 'qweqw', 123123, 'wqqewq', '202cb962ac59075b964b07152d234b70', '', 30),
 (3, 'sad@gmail.com', 1232132, 'weq', 'weq', 'weqwe', 12, 'qweq', 12345, 'dsadad', '202cb962ac59075b964b07152d234b70', '', 30),
-(4, 'allanvillegas35@gmail.com', 21419023, 'Allan', 'Jr. C.', 'Villegas', 0, 'Male', 213123123, 'asdasdas', '4297f44b13955235245b2497399d7a93', '', 3);
+(4, 'allanvillegas35@gmail.com', 21419023, 'Allan', 'Jr. C.', 'Villegas', 0, 'Male', 213123123, 'asdasdas', '4297f44b13955235245b2497399d7a93', '', 1);
 
 -- --------------------------------------------------------
 
@@ -104,6 +121,13 @@ INSERT INTO `user` (`id`, `username`, `passwords`) VALUES
 --
 
 --
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_student_id_back` (`student_id`);
+
+--
 -- Indexes for table `sessions`
 --
 ALTER TABLE `sessions`
@@ -127,10 +151,16 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `student`
@@ -147,6 +177,12 @@ ALTER TABLE `user`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `fk_student_id_back` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`);
 
 --
 -- Constraints for table `sessions`
