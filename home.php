@@ -46,6 +46,8 @@ $con->close();
             <?php 
             echo "<a href='edit.php'>Change Profile</a>";
             ?>
+            <a  href="./announcement.php" class="p-4 text-white bg-sky-500 rounded-md ">View Announcements</a>
+                 <a  href="./reservation.php" class="p-4 text-white bg-blue-500 rounded-md ">Make Reservation</a>
             <a  href="./report.php" class="p-3 text-white bg-green-500 rounded-md ">Submit A Report</a>
             <a href="logout.php" class="bg-purple-600 text-white cursor-pointer rounded-md "> Log Out </a>
         

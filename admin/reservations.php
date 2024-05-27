@@ -6,15 +6,18 @@ if(!isset($_SESSION['valids']))
     header("Location: ./");
 include(".././config.php");
 
-
-$students= [];
-$query = "SELECT * FROM sessions INNER JOIN student ON student.id = sessions.student_id ORDER BY time_out asc";
+$students = [];
+$query = "SELECT bookings.id AS bookid, bookings.*, student.* 
+          FROM bookings 
+          INNER JOIN student ON student.id = bookings.student_id 
+          ORDER BY bookings.date_created DESC";
 $result = $con->query($query);
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $students[] = $row;
     }
 }
+
 $con->close();
 
 ?>
@@ -94,32 +97,23 @@ $con->close();
     </div>
   </div>
   <div class="flex-1 p-4 lg:ml-64  lg:pt-5">
-    <h1 class="text-xl">VIEW SITIN RECORDS</h1>
+    <h1 class="text-xl font-medium mt-10 mb-10">Bookings Approval</h1>
     <div class="">
           
-            <div class="grid grid-cols-4 mt-3">
-                <form action="" method="get" class="flex  rounded-md">
-                <div class="items-center flex justify-start w-full shadow-lg border  rounded-md bg-white">
-                    <input name="search" class="px-3 p-1 outline-none  bg-transparent " tpye="text" value="" placeholder="Search student..."/>
-                    <i class="self-center text-center w-full text-gray-500 border-l px-3 p-1 fa-solid fa-magnifying-glass"></i>
-                    <input   class="hidden shadow-lg px-3 p-1 rounded-md text-white cursor-pointer hover:bg-purple-600 bg-purple-500" type="submit" value="Search"/>
-                </div>
-                 
-            </form>
-              <input type="text" id="datetimepicker" placeholder="From Date" class="outline-none px-3 rounded-md form-input w-full">
-            </div>
+           
         </div>
-     <table class="mt-5 w-full text-sm text-left rtl:text-right text-white rounded-lg overflow-hidden">
-                <thead class="text-xs bg-gradient-to-r from-green-400 to-blue-500 uppercase rounded-md">
+     <table class=" w-full text-sm text-left rtl:text-right text-white rounded-lg overflow-hidden">
+                <thead class="text-xs bg-gradient-to-r from-sky-800 via-blue-500 to-sky-800 uppercase rounded-md">
                     <tr>
-                        <th class="border px-4 py-4 font-medium border-none text-center font-bold">ID NO
+                        <th class="border px-4 py-4 font-medium border-none text-center font-bold"> STUDENT ID NO
                         </th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">FIRST NAME</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">LAST NAME</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">SESSIONS</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">EMAIL</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">TIME IN</th>
-                        <th class="border px-4 py-4 font-medium border-none  text-center">TIME OUT</th>
+                        <th class="border px-4 py-4 font-medium border-none  text-center">BOOKING ID</th>
+                        <th class="border px-4 py-4 font-medium border-none  text-center">NAME</th>
+                        
+                        <th class="border px-4 py-4 font-medium border-none  text-center">Purpose</th>
+                        <th class="border px-4 py-4 font-medium border-none  text-center">Laboratory</th>
+                        <th class="border px-4 py-4 font-medium border-none  text-center">Reservation Date</th>
+                       
                         <th class="border px-4 py-4 font-medium border-none  text-center">Operation</th>
                     </tr>
                 </thead>
@@ -129,23 +123,19 @@ $con->close();
                 <?php 
 
             foreach ($students as $student) {
-
-            $timein = $student['time_in'] == null 
-    ? '<a href="./timein.php?id=' . $student['id'] . '&s_id=' . $student['session_id'] . '" class="bg-white text-black px-3 p-2 rounded-md">Time In</a>' 
-    : ($student['time_out'] == null  
-        ? '<a href="./timeout.php?id=' . $student['id'] . '&s_id=' . $student['session_id'] . '" class="text-white bg-green-500 px-3 p-2 rounded-md">Logout</a>' 
-        : '<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>'
-    );
-
-                   echo '<tr class="odd:bg-blue-400 bg-blue-700">
+                    $status = $student['status'];
+                    if($student['status'] == 'Pending') {
+                        $status = '<div class="flex justify-end gap-3"><a href="./approve.php?id='.$student['bookid'].'" class="text-white bg-green-500 px-3 p-2 rounded-md">Approve</a><a href="./reject.php?id='.$student['bookid'].'" class="text-white bg-red-500 px-3 p-2 rounded-md">Reject</a></div>';
+                    }
+                   echo '<tr class="odd:bg-sky-500 bg-blue-700">
                                 <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['idno'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['fname'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['lname'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['sessions'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['email'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['time_in'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['time_out'].'</td>
-                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">' .$timein. '</td></tr>';
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['bookid'].'</td>
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['fname'].' '.$student['lname'].'</td>
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['purpose'].'</td>
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$student['laboratory'].'</td>
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.date('F j, Y', strtotime($student['reservation_date'])).'</td>
+                       
+                                <td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">'.$status.'</td></tr>';
                 }
             ?>
 
@@ -175,9 +165,7 @@ $con->close();
                         if(selectedDate == studentDate) {
                             const statusElement = student.time_out !== null 
                             ? `<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>` 
-                            : student.time_in == null ?`<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Time In</a>` : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
-
-
+                            : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
                             data += `<tr class="odd:bg-purple-500 bg-purple-700"><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.idno}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.firstname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.lastname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.sessions}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.email}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_in}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${time_out}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${statusElement}</td></tr>`
                         }
                        
@@ -208,9 +196,7 @@ $con->close();
                 let data= "";
                 const statusElement = student.time_out !== null 
                             ? `<span href="#" class="text-white bg-green-500 px-3 p-2 rounded-md">Finished</span>` 
-                            :student.time_in == null ? `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Time In</a>` : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
-
-
+                            : `<a href="./timeout.php?id=${student['id']}&s_id=${student['session_id']}" class="text-white bg-red-500 px-3 p-2 rounded-md">Logout</a>`;
                             data += `<tr class="odd:bg-purple-500 bg-purple-700"><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.idno}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.firstname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.lastname}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.sessions}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.email}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.time_in}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${student.time_out}</td><td class="border px-4 py-4 border-none text-center text-xs md:text-sm text-white">${statusElement}</td></tr>`
 
                  $("#tbody").html(data)
